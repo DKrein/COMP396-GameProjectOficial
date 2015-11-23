@@ -77,6 +77,6 @@ public class ServerManager : MonoBehaviour {
 
     public void SpawnPlayer()
     {
-        Network.Instantiate(playerPrefab, new Vector3(-2f, 2f, -1f), Quaternion.identity, 0);
+        Network.Instantiate(playerPrefab, new Vector3(20f, .5f, -22f), Quaternion.identity, 0);
     }
 }

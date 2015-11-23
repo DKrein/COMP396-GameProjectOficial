@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour {
 
     public int currentScore;
-    public int highScore;
-    public int currentLevel = 1;
+    //public int highScore;
+    static int currentLevel = 1;
     public int unlockedLevel;
 
     public GameObject deathParent;
@@ -16,10 +16,16 @@ public class GameManager : MonoBehaviour {
     public static GameObject[] players;  
 
     public GUISkin skin;
+    public GameObject playerPrefab;
 
 	// Use this for initialization
 	void Start () {
         DontDestroyOnLoad(gameObject);
+
+        if (currentLevel != 1)
+        {
+            Network.Instantiate(playerPrefab, new Vector3(20f, .5f, -22f), Quaternion.identity, 0);
+        }
 	}
 	
 	// Update is called once per frame
@@ -30,7 +36,7 @@ public class GameManager : MonoBehaviour {
     public void CompleteLevel()
     {
         currentLevel += 1;
-        //Application.LoadLevel(currentLevel);
+        Application.LoadLevel(currentLevel);
        // NetworkLevelLoader.Instance.LoadLevel("Level 2", currentLevel);
     }
 
