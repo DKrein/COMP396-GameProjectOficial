@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
     {
         currentLevel += 1;
         //Application.LoadLevel(currentLevel);
-        NetworkLevelLoader.Instance.LoadLevel("Level 2", currentLevel);
+       // NetworkLevelLoader.Instance.LoadLevel("Level 2", currentLevel);
     }
 
     void OnGUI()
