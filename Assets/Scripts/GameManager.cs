@@ -1,45 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
     public int currentScore;
     public int highScore;
-    public int currentLevel = 0;
+    public int currentLevel = 1;
     public int unlockedLevel;
 
-    public GameObject keyParent;
     public GameObject deathParent;
-    public int keyCount;
-    public int deathCount;
-    private int totalKeyCount;
+    public static int keyCount = 0;
+    public static int totalKeyCount = 0;
+    public static int numPlayerInExit;
+    public static GameObject[] players;  
 
     public GUISkin skin;
 
 	// Use this for initialization
 	void Start () {
-
-        totalKeyCount = keyParent.transform.childCount;
         DontDestroyOnLoad(gameObject);
-	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+        players = GameObject.FindGameObjectsWithTag("Player");
 	}
 
     public void CompleteLevel()
     {
         currentLevel += 1;
-        Application.LoadLevel(currentLevel);
-        
+        //Application.LoadLevel(currentLevel);
+        NetworkLevelLoader.Instance.LoadLevel("Level 2", currentLevel);
     }
 
     void OnGUI()
     {
         GUI.skin = skin;
-        GUI.Label(new Rect(20, 20, 200, 200), "Keys Collect: " + keyCount.ToString() + "/" + totalKeyCount.ToString());
-        GUI.Label(new Rect(20, 40, 200, 200), "Deaths: " + deathCount.ToString());
+        GUI.Label(new Rect(20, 20, 200, 200), "Total Keys Collect: " + keyCount.ToString() + "/" + totalKeyCount.ToString());
     }
 }

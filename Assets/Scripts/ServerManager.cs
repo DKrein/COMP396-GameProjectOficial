@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class ServerManager : MonoBehaviour {
 
 	private const string typeName = "UniqueGameName-Room";
-	private const string gameName = "In the room";
+    private const string gameName = "In the room";
+
+    //public GameObject key;
+    //private int randomIdx;
 	
 	private void StartServer()
 	{
-		Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+		Network.InitializeServer(3, 25000, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(typeName, gameName);
 	}
 
@@ -71,8 +75,8 @@ public class ServerManager : MonoBehaviour {
 
     public GameObject playerPrefab;
 
-    private void SpawnPlayer()
+    public void SpawnPlayer()
     {
-        Network.Instantiate(playerPrefab, new Vector3(18f, 5f, -22f), Quaternion.identity, 0);
+        Network.Instantiate(playerPrefab, new Vector3(-2f, 2f, -1f), Quaternion.identity, 0);
     }
 }

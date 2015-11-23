@@ -7,15 +7,19 @@ public class PlayerMovement : MonoBehaviour {
 
     public float moveSpeed;
     public float rotationSpeed = 60f;
-    public GameObject deathParticles;
-    
+    public GameObject deathParticles;  
 
     private float maxSpeed = 5f;
     private Vector3 input;
     private Vector3 spawn;
 
+    private int myKeyCollect = 0;
+    private int deathCount;
+
 	// Use this for initialization
 	void Start () {
+
+        GameManager.totalKeyCount += 4;
 
         spawn = this.transform.position;
         manager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -23,6 +27,10 @@ public class PlayerMovement : MonoBehaviour {
         if (GetComponent<NetworkView>().isMine)
         {
             GetComponentInChildren<Camera>().enabled = true;
+        }
+        else
+        {
+            GetComponentInChildren<AudioListener>().enabled = false;
         }
 	}
 	
@@ -64,19 +72,34 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
 
+    void OnTriggerExit(Collider other)
+    {
+        GameManager.numPlayerInExit -= 1;
+        Debug.Log("Player leave, remain player: " + GameManager.numPlayerInExit);
+    }
+
     void OnTriggerEnter(Collider other)
     {
+        //manager.CompleteLevel();
 		if (other.transform.tag == "Goal")
         {
-			if (manager.keyCount == 4) {
-				manager.CompleteLevel();
-			}            
+            GameManager.numPlayerInExit += 1;
+            Debug.Log("Player enter, remain player: " + GameManager.numPlayerInExit);
+            Debug.Log("Toal player: " + GameManager.players.Length);
+            if (GameManager.numPlayerInExit == GameManager.players.Length && GameManager.keyCount == GameManager.totalKeyCount)
+            {
+                manager.CompleteLevel();
+            }            
         }
 
 		if (other.transform.tag == "Key")
         {
-            manager.keyCount += 1; ;
-			Destroy(other.gameObject);
+            if (myKeyCollect < 4)
+            {
+                GameManager.keyCount += 1; ;
+                Destroy(other.gameObject);
+                myKeyCollect += 1;
+            }  
         }
 
 		if (other.transform.tag == "Bullet")
@@ -94,7 +117,16 @@ public class PlayerMovement : MonoBehaviour {
     {
         Instantiate(deathParticles, transform.position, Quaternion.identity);
         transform.position = spawn;
-        manager.deathCount += 1;
+        deathCount += 1;
+    }
+
+    void OnGUI()
+    {
+        if (GetComponent<NetworkView>().isMine)
+        {
+            GUI.Label(new Rect(20, 40, 200, 200), "Deaths: " + deathCount.ToString());
+            GUI.Label(new Rect(20, 60, 200, 200), "My Keys: " + myKeyCollect.ToString());
+        }
     }
 
     void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
